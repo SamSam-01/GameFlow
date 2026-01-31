@@ -191,6 +191,11 @@
     </div>
 
     <div id="input-area">
+        <select id="game-select"
+            style="padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; margin-right: 10px; background: white;">
+            <option value="monopoly">Monopoly</option>
+            <option value="uno">Uno</option>
+        </select>
         <input type="text" id="question" placeholder="Posez votre question de règle..." autocomplete="off">
         <button id="sendBtn" onclick="envoyer()">Envoyer</button>
     </div>
@@ -254,7 +259,14 @@
             chatContainer.appendChild(userDiv);
 
             chatContainer.scrollTop = chatContainer.scrollHeight;
-            ws.send(text);
+
+            const slug = document.getElementById("game-select").value;
+            const payload = JSON.stringify({
+                "slug": slug,
+                "question": text
+            });
+
+            ws.send(payload);
             inputField.value = "";
             currentBotMessageDiv = null;
         }
