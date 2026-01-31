@@ -5,7 +5,7 @@ import os
 
 MONGO_URL = os.getenv("MONGO_URL", "mongodb://localhost:27017")
 client = AsyncIOMotorClient(MONGO_URL)
-db = client["refere_io_db"]
+db = client["IArbitre_db"]
 collection = db["game_rules"]
 
 def extract_rules_from_pdf(path):
