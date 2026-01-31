@@ -1,56 +1,57 @@
-import asyncio
+import os
+import json
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from openai import AsyncOpenAI
-from pypdf import PdfReader
-
-import os
+from motor.motor_asyncio import AsyncIOMotorClient
 
 app = FastAPI()
+
 LM_STUDIO_URL = os.getenv("LM_STUDIO_URL", "http://localhost:1234/v1")
-client = AsyncOpenAI(base_url=LM_STUDIO_URL, api_key="lm-studio")
-
-def init_rules(file):
-    try:
-        reader = PdfReader(file)
-        text = ""
-        for page in reader.pages:
-            text += page.extract_text() + "\n"
-        print("✅ PDF chargé avec succès !")
-        return text
-    except Exception as e:
-        print(f"⚠️ Erreur PDF : {e}")
-        return "Règles introuvables."
-
-GAME_RULES = init_rules("regles_monopoly.pdf")
-
-SYSTEM_PROMPT = f"""
-Tu es un assistant expert. Voici les règles officielles sur lesquelles tu dois te baser :
---- DEBUT REGLES ---
-{GAME_RULES}
---- FIN REGLES ---
-Ne réponds qu'en utilisant ces règles.
-"""
+MONGO_URL = os.getenv("MONGO_URL", "mongodb://localhost:27017")
+ai_client = AsyncOpenAI(base_url=LM_STUDIO_URL, api_key="lm-studio")
+mongo_client = AsyncIOMotorClient(MONGO_URL)
+db = mongo_client["IArbitre_db"]
+rules_collection = db["game_rules"]
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     
-    chat_history = [
-        {"role": "system", "content": SYSTEM_PROMPT}
-    ]
-    
     try:
         while True:
-            question = await websocket.receive_text()
+            raw_data = await websocket.receive_text()
             
-            chat_history.append({"role": "user", "content": question})
+            # Check if data is JSON {"slug": "game_name", "question": "player_question"}
+            try:
+                data = json.loads(raw_data)
+                game_slug = data.get("slug", "monopoly")
+                question = data.get("question", "")
+            except:
+                game_slug = "monopoly"
+                question = raw_data
 
-            stream = await client.chat.completions.create(
+            # Search if rules exists in MongoDB
+            print(f"🔍 Recherche des règles pour : {game_slug}")
+            game_doc = await rules_collection.find_one({"slug": game_slug})
+
+            # Load system prompt
+            if game_doc:
+                system_prompt_loaded = game_doc["compiled_prompt"]
+            else:
+                system_prompt_loaded = "Tu es un assistant utile. Je n'ai pas trouvé les règles de ce jeu dans la base."
+            
+            messages = [
+                {"role": "system", "content": system_prompt_loaded},
+                {"role": "user", "content": question}
+            ]
+
+            stream = await ai_client.chat.completions.create(
                 model="local-model",
-                messages=chat_history, 
+                messages=messages,
                 stream=True,
             )
 
+            # Get response stream
             full_response = ""
             async for chunk in stream:
                 if chunk.choices[0].delta.content:
@@ -61,4 +62,4 @@ async def websocket_endpoint(websocket: WebSocket):
             await websocket.send_text(" [FIN]")
             
     except WebSocketDisconnect:
-        print("Joueur parti")
+        print("🔌 Joueur déconnecté")
