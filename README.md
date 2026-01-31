@@ -22,8 +22,17 @@ GameFlow is an intelligent referee application designed to help players resolve 
 
 ## ⚡ Quick Start
 
-1.  **Set up LM Studio**: Load **qwen2.5** and start the local server on port `1234`.
-2.  **Start Backend**: Navigate to `/backend` and run the FastAPI server.
-3.  **Launch Frontend**: Open `/frontend/index.html` in your browser.
+1.  **Set up LM Studio**:
+    -   Load **qwen2.5** (or compatible model).
+    -   Start the local server on port `1234`.
+    -   **IMPORTANT**: Enable the option **"Serve on Local Network"** to allow the containerized backend to access it.
+2.  **Environment Setup**:
+    -   Copy `.env.template` to `.env`: `cp .env.template .env`
+    -   Adjust variables if necessary (e.g., if your local IP differs).
+3.  **Run with Docker Compose (Recommended)**:
+    -   Run `docker compose up --build`
+4.  **Manual Start**:
+    -   **Backend**: `cd backend && uvicorn main:app --reload`
+    -   **Frontend**: Open `/frontend/index.html`
 
 See the specific `README.md` files in each directory for detailed instructions.
