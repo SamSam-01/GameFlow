@@ -2,11 +2,15 @@ import asyncio
 from pypdf import PdfReader
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
+import re
 
 MONGO_URL = os.getenv("MONGO_URL", "mongodb://localhost:27017")
 client = AsyncIOMotorClient(MONGO_URL)
 db = client["IArbitre_db"]
 collection = db["game_rules"]
+
+def slugify(text):
+    return re.sub(r'[^a-z0-9]+', '-', text.lower()).strip('-')
 
 def extract_rules_from_pdf(path):
     try:
@@ -18,13 +22,13 @@ def extract_rules_from_pdf(path):
         return text
     except Exception as e:
         print(f"⚠️ Erreur PDF : {e}")
-        return "Règles introuvables."
+        return None
 
 async def add_game_to_db(game_name, path):
     print(f"🔄 Traitement de {game_name}...")
 
     rules = extract_rules_from_pdf(path)
-    if not rules:
+    if rules is None:
         return
 
     SYSTEM_PROMPT = f"""
@@ -39,7 +43,7 @@ async def add_game_to_db(game_name, path):
     INSTRUCTION : Réponds à la question du joueur en utilisant UNIQUEMENT les règles ci-dessus.
     Si la réponse n'est pas dans le texte, dis "Je ne sais pas".
     """
-    slug = game_name.lower()
+    slug = slugify(game_name)
     
     await collection.update_one(
         {"slug": slug},
