@@ -3,8 +3,11 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from openai import AsyncOpenAI
 from pypdf import PdfReader
 
+import os
+
 app = FastAPI()
-client = AsyncOpenAI(base_url="http://localhost:1234/v1", api_key="lm-studio")
+LM_STUDIO_URL = os.getenv("LM_STUDIO_URL", "http://localhost:1234/v1")
+client = AsyncOpenAI(base_url=LM_STUDIO_URL, api_key="lm-studio")
 
 def init_rules(file):
     try:
