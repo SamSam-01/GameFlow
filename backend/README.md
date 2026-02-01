@@ -5,6 +5,7 @@ The backend for GameFlow, built with **FastAPI**. It handles WebSocket connectio
 ## 📋 Prerequisites
 
 -   **Python 3.8+**
+-   **MongoDB**: required for storing rules (provided via Docker).
 -   **LM Studio**: You must have LM Studio installed and running.
     -   **Model**: We recommend using **qwen2.5** (e.g., `qwen2.5-7b-instruct`).
     -   **Server**: Start the Local Inference Server in LM Studio (default URL: `http://localhost:1234/v1`).
@@ -27,14 +28,20 @@ The backend for GameFlow, built with **FastAPI**. It handles WebSocket connectio
 
 3.  Install dependencies:
     ```bash
-    pip install fastapi uvicorn openai pypdf
+    pip install fastapi uvicorn openai pypdf motor
     ```
 
 ## 🚀 Usage
 
 1.  **Prepare Rulebook**: Place your game rules PDF (e.g., `regles_monopoly.pdf`) in the `backend/` directory.
 
-2.  **Start the Server**:
+2.  **Ingest Rules**:
+    Run the script to parse PDFs and save them to MongoDB:
+    ```bash
+    python3 add_game.py
+    ```
+
+3.  **Start the Server**:
     ```bash
     uvicorn main:app --reload
     ```

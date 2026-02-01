@@ -11,14 +11,16 @@ GameFlow is an intelligent referee application designed to help players resolve 
 ## 🛠️ Tech Stack
 
 -   **Backend**: Python, FastAPI, WebSockets
+-   **Database**: MongoDB (motor, pymongo)
 -   **Frontend**: HTML5, JavaScript, CSS (Vanilla)
 -   **AI Engine**: [LM Studio](https://lmstudio.ai/) running **qwen2.5** (or compatible local models).
--   **Libraries**: `openai` (for local API), `pypdf`
+-   **Libraries**: `openai` (for local API), `pypdf`, `motor`
 
 ## 📂 Project Structure
 
--   `/backend`: Contains the FastAPI server, PDF parsing logic, and websocket handler.
--   `/frontend`: Contains the user interface (HTML/JS).
+-   `/backend`: Contains the FastAPI server, PDF parsing logic, database initialization (`add_game.py`), and websocket handler.
+-   `/frontend`: Contains the user interface (HTML/JS) served by Nginx.
+-   `docker-compose.yml`: Orchestrates Backend, Frontend, and MongoDB.
 
 ## ⚡ Quick Start
 
@@ -31,6 +33,12 @@ GameFlow is an intelligent referee application designed to help players resolve 
     -   Adjust variables if necessary (e.g., if your local IP differs).
 3.  **Run with Docker Compose (Recommended)**:
     -   Run `docker compose up --build`
+    -   **Initialize Database**: The first time, you must ingest rules:
+        ```bash
+        # From the host machine
+        docker compose exec backend python3 add_game.py
+        ```
+    -   *Note*: The frontend is accessible at `http://localhost:8080`.
 4.  **Manual Start**:
     -   **Backend**: `cd backend && uvicorn main:app --reload`
     -   **Frontend**: Open `/frontend/index.html`
