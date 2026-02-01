@@ -5,15 +5,17 @@ GameFlow is an intelligent referee application designed to help players resolve 
 ## 🚀 Features
 
 -   **AI-Powered Rule Arbitration**: Uses a local LLM (Large Language Model) to understand and explain game rules.
+-   **Multi-Game Support**: Dynamically switch between games (e.g., Monopoly, Uno).
 -   **Real-time Chat**: WebSocket-based chat interface for instant responses.
 -   **PDF Rule Ingestion**: parses official rulebooks (PDF) to ground the AI's knowledge.
 
 ## 🛠️ Tech Stack
 
 -   **Backend**: Python, FastAPI, WebSockets
+-   **Database**: MongoDB (for storing rules and prompts)
 -   **Frontend**: HTML5, JavaScript, CSS (Vanilla)
 -   **AI Engine**: [LM Studio](https://lmstudio.ai/) running **qwen2.5** (or compatible local models).
--   **Libraries**: `openai` (for local API), `pypdf`
+-   **Libraries**: `openai` (for local API), `pypdf`, `motor` (MongoDB async driver)
 
 ## 📂 Project Structure
 
@@ -31,7 +33,13 @@ GameFlow is an intelligent referee application designed to help players resolve 
     -   Adjust variables if necessary (e.g., if your local IP differs).
 3.  **Run with Docker Compose (Recommended)**:
     -   Run `docker compose up --build`
+    -   **Initialize Database**:
+        ```bash
+        docker compose exec backend python add_game.py
+        ```
+        This loads the default games (Monopoly, Uno) into MongoDB.
 4.  **Manual Start**:
+    -   **Database**: Ensure MongoDB is running.
     -   **Backend**: `cd backend && uvicorn main:app --reload`
     -   **Frontend**: Open `/frontend/index.html`
 
