@@ -1,5 +1,46 @@
-# Vue 3 + Vite
+# GameFlow Frontend
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+The modern frontend for GameFlow, built with **Vue 3** and **Vite**. It features a premium "Glassmorphism" design and WebSocket-based real-time chat.
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+## 🛠️ Tech Stack
+
+-   **Framework**: Vue 3 (Composition API)
+-   **Build Tool**: Vite
+-   **Routing**: Vue Router
+-   **HTTP Client**: Axios
+-   **Markdown Rendering**: `marked` + `dompurify`
+-   **Styling**: Vanilla CSS (Variables, Flexbox/Grid, Glassmorphism)
+
+## 📂 Project Structure
+
+-   `src/views/`: Page components (`HomeView.vue`, `ChatView.vue`).
+-   `src/router/`: Route definitions.
+-   `src/assets/`: Global styles (`main.css`).
+-   `src/App.vue`: Root component.
+
+## 🚀 Development
+
+1.  **Install Dependencies**:
+    ```bash
+    npm install
+    ```
+
+2.  **Start Dev Server**:
+    ```bash
+    npm run dev
+    ```
+    The app will be available at `http://localhost:5173`.
+
+3.  **Build for Production**:
+    ```bash
+    npm run build
+    ```
+
+## 🐳 Docker Deployment
+
+In the context of the full project, the frontend acts as a development server to allow Hot Module Replacement (HMR).
+
+-   **Internal Port**: 5173
+-   **Exposed Port**: 8080 (Mapped in `docker-compose.yml`)
+
+Access the app via Docker at **http://localhost:8080**.
