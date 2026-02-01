@@ -1,10 +1,28 @@
 import os
 import json
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi.middleware.cors import CORSMiddleware
+from pypdf import PdfReader
 from openai import AsyncOpenAI
 from motor.motor_asyncio import AsyncIOMotorClient
+from pydantic import BaseModel
+from typing import List
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins for dev
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+class Game(BaseModel):
+    slug: str
+    game_name: str
+
+
 
 LM_STUDIO_URL = os.getenv("LM_STUDIO_URL", "http://localhost:1234/v1")
 MONGO_URL = os.getenv("MONGO_URL", "mongodb://localhost:27017")
@@ -12,6 +30,12 @@ ai_client = AsyncOpenAI(base_url=LM_STUDIO_URL, api_key="lm-studio")
 mongo_client = AsyncIOMotorClient(MONGO_URL)
 db = mongo_client["IArbitre_db"]
 rules_collection = db["game_rules"]
+
+@app.get("/games", response_model=List[Game])
+async def get_games():
+    games_cursor = rules_collection.find({}, {"_id": 0, "slug": 1, "game_name": 1})
+    games = await games_cursor.to_list(length=100)
+    return games
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
