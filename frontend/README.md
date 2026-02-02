@@ -1,20 +1,46 @@
 # GameFlow Frontend
 
-The user interface for GameFlow. It's a lightweight, vanilla HTML/JS application that connects to the backend via WebSockets to provide a chat interface for rule queries.
+The modern frontend for GameFlow, built with **Vue 3** and **Vite**. It features a premium "Glassmorphism" design and WebSocket-based real-time chat.
 
-## 🚀 Usage
+## 🛠️ Tech Stack
 
-Since this is a static HTML site, you don't need a build step or a dedicated frontend server for local testing.
+-   **Framework**: Vue 3 (Composition API)
+-   **Build Tool**: Vite
+-   **Routing**: Vue Router
+-   **HTTP Client**: Axios
+-   **Markdown Rendering**: `marked` + `dompurify`
+-   **Styling**: Vanilla CSS (Variables, Flexbox/Grid, Glassmorphism)
 
-1.  **Ensure Backend is Running**: Make sure the FastAPI backend is running on `http://127.0.0.1:8000`.
-2.  **Open the App**: Simply open `index.html` in your web browser.
-    -   You can double-click the file in your file explorer.
-    -   Or use a live server extension (like Live Server in VS Code) for a better experience.
+## 📂 Project Structure
 
-## 🔌 Connection
+-   `src/views/`: Page components (`HomeView.vue`, `ChatView.vue`).
+-   `src/router/`: Route definitions.
+-   `src/assets/`: Global styles (`main.css`).
+-   `src/App.vue`: Root component.
 
-The frontend attempts to connect to:
-`ws://localhost:8000/ws`
+## 🚀 Development
 
--   **Green Status**: Connected and ready.
--   **Red Status**: Disconnected (check if the backend is running).
+1.  **Install Dependencies**:
+    ```bash
+    npm install
+    ```
+
+2.  **Start Dev Server**:
+    ```bash
+    npm run dev
+    ```
+    The app will be available at `http://localhost:5173`.
+
+3.  **Build for Production**:
+    ```bash
+    npm run build
+    ```
+
+## 🐳 Docker Deployment
+
+In the context of the full project, the frontend acts as a development server to allow Hot Module Replacement (HMR).
+
+-   **Internal Port**: 5173
+-   **Exposed Port**: 8080 (Mapped in `docker-compose.yml`)
+
+Access the app via Docker at **http://localhost:8080**.

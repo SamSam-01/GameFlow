@@ -47,6 +47,13 @@ The backend for GameFlow, built with **FastAPI**. It handles WebSocket connectio
     ```
     The server will start at `http://127.0.0.1:8000`.
 
+## 🌐 API Endpoints
+
+-   `GET /games`: Returns the list of available games.
+-   `WS /ws`: WebSocket endpoint for real-time chat.
+    -   Expects JSON: `{"slug": "game_id", "question": "..."}`
+    -   Returns streaming text chunks.
+
 ## 🧠 AI Configuration
 
 The backend is configured to talk to LM Studio:

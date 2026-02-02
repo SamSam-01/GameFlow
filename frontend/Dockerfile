@@ -1,7 +1,12 @@
-FROM nginx:alpine
+FROM node:lts
 
-# Copy static files to Nginx html directory
-COPY . /usr/share/nginx/html
+WORKDIR /app
 
-# Expose port 80
-EXPOSE 80
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+EXPOSE 5173
+
+CMD ["npm", "run", "dev", "--", "--host"]
