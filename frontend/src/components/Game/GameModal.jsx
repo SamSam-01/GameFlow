@@ -9,7 +9,11 @@ const GameModal = ({ game, onClose }) => {
 
     useEffect(() => {
         setEditedGame(game);
-        setIsEditing(false);
+        if (game?.isNew) {
+            setIsEditing(true);
+        } else {
+            setIsEditing(false);
+        }
     }, [game]);
 
     if (!game) return null;
@@ -72,7 +76,7 @@ const GameModal = ({ game, onClose }) => {
 
                 <div className="flex flex-col items-center text-center mb-6">
                     <div className="w-20 h-20 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center mb-4 shadow-lg shadow-primary/20">
-                        <span className="text-4xl text-white font-bold">{currentGame.game_name.charAt(0)}</span>
+                        <span className="text-4xl text-white font-bold">{currentGame.game_name ? currentGame.game_name.charAt(0) : '+'}</span>
                     </div>
 
                     {isEditing ? (

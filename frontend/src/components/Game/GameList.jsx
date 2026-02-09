@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import GameCard from './GameCard';
+import AddGameCard from './AddGameCard';
 import Loader from '../AppLoader';
 import GameModal from './GameModal';
 
@@ -8,6 +9,15 @@ const GameList = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedGame, setSelectedGame] = useState(null);
+
+    const handleAddNewGame = () => {
+        setSelectedGame({
+            isNew: true,
+            game_name: '',
+            description: '',
+            slug: ''
+        });
+    };
 
     useEffect(() => {
         fetch(`${import.meta.env.VITE_API_URL}/games`)
@@ -58,6 +68,7 @@ const GameList = () => {
                         onClick={setSelectedGame}
                     />
                 ))}
+                <AddGameCard onClick={handleAddNewGame} />
             </div>
 
             <GameModal
