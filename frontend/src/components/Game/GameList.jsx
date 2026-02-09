@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import GameCard from './GameCard';
-import Loader from './AppLoader';
+import Loader from '../AppLoader';
 
 const GameList = () => {
     const [games, setGames] = useState([]);
@@ -8,7 +8,7 @@ const GameList = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        fetch('http://127.0.0.1:8000/games') // TODO: Add a .env variable for the API URL
+        fetch(`${import.meta.env.VITE_API_URL}/games`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
