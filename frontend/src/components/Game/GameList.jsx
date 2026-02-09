@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import GameCard from './GameCard';
 import Loader from '../AppLoader';
+import GameModal from './GameModal';
 
 const GameList = () => {
     const [games, setGames] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [selectedGame, setSelectedGame] = useState(null);
 
     useEffect(() => {
         fetch(`${import.meta.env.VITE_API_URL}/games`)
@@ -47,11 +49,22 @@ const GameList = () => {
     }
 
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-4">
-            {games.map((game) => (
-                <GameCard key={game.slug || game.game_name} game={game} />
-            ))}
-        </div>
+        <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-4">
+                {games.map((game) => (
+                    <GameCard
+                        key={game.slug || game.game_name}
+                        game={game}
+                        onClick={setSelectedGame}
+                    />
+                ))}
+            </div>
+
+            <GameModal
+                game={selectedGame}
+                onClose={() => setSelectedGame(null)}
+            />
+        </>
     );
 };
 
