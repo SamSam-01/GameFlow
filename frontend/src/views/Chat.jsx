@@ -3,6 +3,8 @@ import { useParams } from 'react-router-dom';
 import ChatHeader from '../components/Chat/ChatHeader';
 import ChatMessage from '../components/Chat/ChatMessage';
 import ChatInput from '../components/Chat/ChatInput';
+import QuickReplyButton from '../components/chat/QuickReplyButton';
+import quickReplies from '../data/quick_replies.json';
 
 const Chat = () => {
     const { slug } = useParams();
@@ -66,12 +68,20 @@ const Chat = () => {
 
     const handleSendMessage = (e) => {
         e.preventDefault();
-        if (!newMessage.trim() || !socket) return;
+        sendMessage(newMessage);
+    };
+
+    const handleQuickReply = (text) => {
+        sendMessage(text);
+    };
+
+    const sendMessage = (text) => {
+        if (!text.trim() || !socket) return;
 
         const userMessage = {
             id: Date.now(),
             user: 'You',
-            text: newMessage,
+            text: text,
             isSystem: false,
         };
 
@@ -83,7 +93,7 @@ const Chat = () => {
 
         socket.send(JSON.stringify({
             slug: slug,
-            question: newMessage
+            question: text
         }));
 
         setNewMessage('');
@@ -98,6 +108,17 @@ const Chat = () => {
                     <ChatMessage key={msg.id} msg={msg} />
                 ))}
             </main>
+
+            {/* TODO: wrap when there is too much quick replies */}
+            <div className="px-4 pb-2 flex gap-2 overflow-x-auto no-scrollbar mask-gradient justify-center">
+                {quickReplies.map((reply) => (
+                    <QuickReplyButton
+                        key={reply.id}
+                        reply={reply}
+                        onClick={handleQuickReply}
+                    />
+                ))}
+            </div>
 
             <ChatInput
                 newMessage={newMessage}
