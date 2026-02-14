@@ -1,0 +1,22 @@
+[
+    {
+        "id": "rules",
+        "label": "📜 Règles",
+        "text": "Fait moi un résumé des règles"
+    },
+    {
+        "id": "setup",
+        "label": "🎲 Mise en place",
+        "text": "Comment met-on en place le jeu?"
+    },
+    {
+        "id": "first_player",
+        "label": "👤 Premier joueur",
+        "text": "Qui commence?"
+    },
+    {
+        "id": "win_condition",
+        "label": "🏆 Comment gagner ?",
+        "text": "Comment gagne-t-on?"
+    }
+]
